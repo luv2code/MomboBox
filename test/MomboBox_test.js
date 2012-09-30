@@ -36,7 +36,11 @@
     test('is momboBox', 1, function() {
         ok(this.elems.momboBox().get(0).momboBox, 'should be thoroughly momboBox');
     });
-
+    test('only works on input elements', 1, function () {
+        raises(function () {
+            $('*').momboBox();
+        }, 'the momboBox plugin only works on input elements');
+    });
     module('simple array', {
         setup: function () {
             this.$elem = $('#qunit-fixture input').momboBox({ 
@@ -48,24 +52,5 @@
     test('populates data from constructor', 1, function () {
         equal(this.$elem.get(0).momboBox.data.length, 4);
     });
-
-
-
-    //module('jQuery.momboBox');
-
-    //test('is momboBox', 1, function() {
-    //strictEqual($.momboBox(), 'momboBox', 'should be thoroughly momboBox');
-    //});
-
-    //module(':momboBox selector', {
-    //setup: function() {
-    //this.elems = $('#qunit-fixture').children();
-    //}
-    //});
-
-    //test('is momboBox', 1, function() {
-    //// Use deepEqual & .get() when comparing jQuery objects.
-    //deepEqual(this.elems.filter(':momboBox').get(), this.elems.last().get(), 'knows momboBox when it sees it');
-    //});
 
 }(jQuery));

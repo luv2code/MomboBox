@@ -15,13 +15,19 @@ In your web page:
 <script src="dist/MomboBox.min.js"></script>
 <script>
 jQuery(function($) {
-  $.momboBox(); // "momboBox"
+  $('input element').momboBox({ data: ['option1'] }); // "momboBox"
 });
 </script>
 ```
 
 ## Documentation
 _(Coming soon)_
+
+## Tests
+```
+grunt qunit
+```
+or run test/mombobox_test.html in your browser.
 
 ## Examples
 _(Coming soon)_
