@@ -1,0 +1,33 @@
+{
+  "name": "MomboBox",
+  "title": "User Modifiable Combobox",
+  "description": "This jquery plugin creates a fully stylable drop down. If the user types something into the input that isn't found in the list, the plugin will ad that item to the list.  It's user modifiable.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/luv2code/MomboBox",
+  "author": {
+    "name": "Matthew Taylor",
+    "email": "luv2code@gmail.com",
+    "url": "http://twitter.com/luv2code"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/luv2code/MomboBox.git"
+  },
+  "bugs": {
+    "url": "https://github.com/luv2code/MomboBox/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/luv2code/MomboBox/blob/master/LICENSE-MIT"
+    },
+    {
+      "type": "GPL",
+      "url": "https://github.com/luv2code/MomboBox/blob/master/LICENSE-GPL"
+    }
+  ],
+  "dependencies": {
+    "jquery": ">= 1.8"
+  },
+  "keywords": []
+}
