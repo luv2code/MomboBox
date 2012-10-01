@@ -35,7 +35,7 @@ ComboBox = function (options) {
 		setTimeout(function () {self.dropdownlist.style.display = 'none';}, 150);
 	};
 	// Get Items
-	this.listitems = this.dropdownlist.getElementsByTagName('A');
+	this.listitems = $(this.dropdownlist).children().get();//.getElementsByTagName('A');
 	for (var i=0;i < this.listitems.length; i++) {
 		var t = i;
 		// Binding Click Event
