@@ -73,10 +73,14 @@
                 addCustomItem = function (text) {
                     var insertMethod = momboBox.flags.prependCustom ? 'unshift' : 'push';
                     momboBox.data[insertMethod](text);
-                    renderMenu();
-                    setMatching();
-
+                    momboBox.update();
                 };
+
+            momboBox.update = function () {
+                renderMenu();
+                setMatching();
+            };
+
             $input.val = function (value, soft) {
                 if(typeof value === 'string') {
                     origValue = !soft ? value : origValue;
@@ -85,9 +89,11 @@
                     return origValGet.call($input);
                 }
             };
+
             if(!momboBox.flags.customItems && !!momboBox.data && momboBox.data.length > 0) {
                $input.val(momboBox.data[0]);
             }
+
             //set up the elements
             $menu = $(momboBox.templates.menuTemplate)
                 .insertAfter($button)
