@@ -102,21 +102,29 @@
                         last = $items.length - 1,
                         value,
                         top;
-                    $menu.show();
-                    $selected.toggleClass(momboBox.cssClasses.selectedItem);
+                    if(ev.which !== 27) {
+                        $menu.show();
+                    }
+                    $selected.toggleClass(momboBox.cssClasses.selectedItem + ' ' + momboBox.cssClasses.matchingItem);
                     switch(ev.which) {
                         case 38 : //up arrow key
                             if($selected.length > 0) {
                                 $items.each(function (i, item) {
                                     if(item === $selected.get(0)) {
                                         index = i === 0 ? last : index;
-                                        value = $($items[index]).addClass(momboBox.cssClasses.selectedItem).text();
+                                        value = $($items[index]).addClass(
+                                            momboBox.cssClasses.selectedItem + ' ' +
+                                            momboBox.cssClasses.matchingItem
+                                        ).text();
                                         top = $($items[index]).position().top;
                                     }
                                     index = i;
                                 });
                             } else {
-                                value = $items.last().addClass(momboBox.cssClasses.selectedItem).text();
+                                value = $items.last().addClass(
+                                    momboBox.cssClasses.selectedItem + ' ' +
+                                    momboBox.cssClasses.matchingItem
+                                ).text();
                                 top = $items.last().position().top;
                             }
                             $input.val(value, true);
@@ -128,12 +136,18 @@
                                     index = i + 1;
                                     if(item === $selected.get(0)) {
                                         index = i === last ? 0 : index;
-                                        value = $($items[index]).addClass(momboBox.cssClasses.selectedItem).text();
+                                        value = $($items[index]).addClass(
+                                            momboBox.cssClasses.selectedItem + ' ' +
+                                            momboBox.cssClasses.matchingItem
+                                        ).text();
                                         top = $($items[index]).position().top;
                                     }
                                 });
                             } else {
-                                value = $items.first().addClass(momboBox.cssClasses.selectedItem).text();
+                                value = $items.last().addClass(
+                                    momboBox.cssClasses.selectedItem + ' ' +
+                                    momboBox.cssClasses.matchingItem
+                                ).text();
                                 top = $items.first().position().top;
                             }
                             $input.val(value, true);
@@ -156,6 +170,7 @@
                             $match = $items.siblings('.' + momboBox.cssClasses.matchingItem);
                             if($match.length > 0) {
                                 $input.val($match.first().text());
+                                $menu.fadeOut('fast');
                             } else {
                                 momboBox.data.push($input.val());
                                 renderMenu();
