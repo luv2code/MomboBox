@@ -7,22 +7,20 @@
  */
 
 (function($) {
-    function render(tmpl, value, token) {
-        return tmpl.replace('{'+token+'}', value);
-    }
     var defaults = {
         data: [],
         templates: {
             buttonTemplate: '<button class="mombobutton">↓</button>',
             itemTemplate: '<a class="item">{item}</a>',
-            menuTemplate: '<div class="mombomenu">{menu}</div>',
+            menuTemplate: '<div class="mombomenu"></div>',
             render: function(tmpl, value, token) {
                 return tmpl.replace('{'+token+'}', value);
             }
         },
         cssClasses: {
-            matchingClass: 'match',
-            selectedClass: 'selected'
+            matchingItem: 'match',
+            selectedItem: 'selected',
+            item: 'item'
         },
         flags: {
             customItems:true,
@@ -38,20 +36,122 @@
             }
             var momboBox = this.momboBox = $.extend({}, defaults, options),
                 menuContent = '',
+                $items,
                 $input = $(this),
                 $button = $(momboBox.templates.buttonTemplate).insertAfter($input),
                 $menu,
                 offset = $input.offset(),
                 top = offset.top + $input.outerHeight(),
-                left = offset.left;
-            $.each(momboBox.data, function (index, item) {
-                menuContent+= momboBox.templates.render(momboBox.templates.itemTemplate, item, 'item');
-            });
-            $menu = $(momboBox.templates.render(momboBox.templates.menuTemplate, menuContent, 'menu'))
+                left = offset.left,
+                renderMenu = function () {
+                    $.each(momboBox.data, function (index, item) {
+                        menuContent+= momboBox.templates.render(momboBox.templates.itemTemplate, item, 'item');
+                    });
+                    $menu.empty();
+                    $items = $(menuContent).appendTo($menu);
+                };
+
+            //set up the elements
+            $menu = $(momboBox.templates.menuTemplate)
                 .insertAfter($button)
                 .offset({top:top, left:left})
+                .on('click', '.' + momboBox.cssClasses.item, function (ev) {
+                    $input.val($(ev.target).text());
+                    $menu.fadeOut('fast');
+                    $items.removeClass(momboBox.cssClasses.matchingItem);
+                })
+                .on('mouseover', '.' + momboBox.cssClasses.item, function (ev) {
+                    $items.removeClass(momboBox.cssClasses.selectedItem);
+                    $(ev.target).addClass(momboBox.cssClasses.selectedItem);
+                })
                 .hide();
-            ComboBox({input:$input.get(0), menu:$menu.get(0), button:$button.get(0)});
+
+            renderMenu();
+
+            //event bindings
+            $button.on('click', function () {
+                $input.focus();
+            });
+
+            $input
+                .on('focus', function () {
+                    $input.select();
+                    $menu.show();
+                })
+                .on('blur', function () {
+                    $menu.fadeOut('fast');//need time to register click events
+                })
+                .on('keydown', function (ev) {
+                    var $selected = $items.siblings('.' + momboBox.cssClasses.selectedItem),
+                        index = 0,
+                        last = $items.length - 1,
+                        value,
+                        top;
+                    $selected.toggleClass(momboBox.cssClasses.selectedItem);
+                    switch(ev.which) {
+                        case 38 : //up arrow key
+                            if($selected.length > 0) {
+                                $items.each(function (i, item) {
+                                    if(item === $selected.get(0)) {
+                                        index = i === 0 ? last : index;
+                                        value = $($items[index]).addClass(momboBox.cssClasses.selectedItem).text();
+                                        top = $($items[index]).position().top;
+                                    }
+                                    index = i;
+                                });
+                            } else {
+                                value = $items.last().addClass(momboBox.cssClasses.selectedItem).text();
+                                top = $items.last().position().top;
+                            }
+                            $input.val(value);
+                            $menu.scrollTop(top);
+                            break;
+                        case 40 : //down arrow key
+                            if($selected.length > 0) {
+                                $items.each(function (i, item) {
+                                    index = i + 1;
+                                    if(item === $selected.get(0)) {
+                                        index = i === last ? 0 : index;
+                                        value = $($items[index]).addClass(momboBox.cssClasses.selectedItem).text();
+                                        top = $($items[index]).position().top;
+                                    }
+                                });
+                            } else {
+                                value = $items.first().addClass(momboBox.cssClasses.selectedItem).text();
+                                top = $items.first().position().top;
+                            }
+                            $input.val(value);
+                            $menu.scrollTop(top);
+                            break;
+                    }
+                })
+                .on('keyup', function (ev) {
+                    var $match, rgx = new RegExp('('+$input.val()+')', 'i');
+                    switch(ev.which) {
+                        case 13 :
+                            $match = $items.siblings('.' + momboBox.cssClasses.matchingItem);
+                            if($match.length > 0) {
+                                $input.val($match.first().text());
+                            } else {
+                                momboBox.data.push($input.val());
+                                renderMenu();
+                                $menu.scrollTop($items.last().position().top);
+                            }
+                            break;
+                        default :
+                            if(ev.which !== 38 && ev.which !== 40) {
+                                $items.each(function (i, item) {
+                                    var $item = $(item), text = $item.text();
+                                    if(rgx.test(text)) {
+                                        $item.addClass(momboBox.cssClasses.matchingItem);
+                                    } else {
+                                        $item.removeClass(momboBox.cssClasses.matchingItem);
+                                    }
+                                });
+                            }
+                            break;
+                    }
+                });
         });
     };
 
