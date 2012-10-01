@@ -60,17 +60,22 @@
                             var $item = $(item), text = $item.text();
                             if(rgx.test(text)) {
                                 $item.addClass(momboBox.cssClasses.matchingItem);
+                                if(text.toLowerCase() === $input.val().toLowerCase()) {
+                                    $match = $item;
+                                }
                             } else {
                                 $item.removeClass(momboBox.cssClasses.matchingItem);
                             }
                         });
-                        $match = $items.siblings('.' + momboBox.cssClasses.matchingItem).first();
+                        $match = $match || $items.siblings('.' + momboBox.cssClasses.matchingItem).first();
                         if($match.length > 0) {
                             $menu.scrollTop($match.position().top);
+                            $match.addClass(momboBox.cssClasses.selectedItem);
                         }
                     } else {
                         $items.removeClass(momboBox.cssClasses.matchingItem);
                     }
+                    return $match;
                 },
                 addCustomItem = function (text) {
                     var insertMethod = momboBox.flags.prependCustom ? 'unshift' : 'push';
@@ -111,6 +116,7 @@
                     $input.val($(ev.target).text());
                     $menu.fadeOut('fast');
                     $items.removeClass(momboBox.cssClasses.matchingItem);
+                    $input.trigger('changed', $input.val());
                 })
                 .on('mouseover', '.' + momboBox.cssClasses.item, function (ev) {
                     $items.removeClass(momboBox.cssClasses.selectedItem);
@@ -178,7 +184,6 @@
                                 top = $items.last().position().top;
                             }
                             $input.val(value, true);
-                            $menu.scrollTop(top);
                             break;
                         case 40 : //down arrow key
                             if($selected.length > 0) {
@@ -201,7 +206,6 @@
                                 top = $items.first().position().top;
                             }
                             $input.val(value, true);
-                            $menu.scrollTop(top);
                             break;
                         case 27 : //escape
                             $menu.fadeOut('fast');
@@ -211,8 +215,7 @@
                             $menu.fadeOut('fast');
                             break;
                         case 13 :
-                            setMatching();
-                            $match = $items.siblings('.' + momboBox.cssClasses.matchingItem);
+                            $match = setMatching();
                             if($match.length > 0) {
                                 $input.val($match.first().text());
                             } else {
@@ -222,6 +225,7 @@
                                     $input.trigger('added-custom', [$input.val()]);
                                 }
                             }
+                            $input.trigger('changed', $input.val());
                             $menu.fadeOut('fast');
                             break;
 

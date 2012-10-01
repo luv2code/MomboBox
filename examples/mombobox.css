@@ -3,9 +3,9 @@ body {
     font-size: 12px
 }
 div.mombomenu {
-    width: 200px;
+    width: 70px;
     border: solid 1px #000;
-    height: 200px;
+    height: 90px;
     overflow: auto;
     position:absolute;
     background-color: #fff;
