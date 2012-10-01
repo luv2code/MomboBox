@@ -8,7 +8,8 @@
 	BSD License
 	
 */
-ComboBox = function (options) {
+(function (window, $) {
+window.ComboBox = function (options) {
 	// Edit element cache 
 	this.edit = options.input;
 	// Items Container 
@@ -153,4 +154,5 @@ ComboBox = function (options) {
 			}
 		}
 	}
-}
+};
+}(this, jQuery));

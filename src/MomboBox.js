@@ -16,11 +16,18 @@
             buttonTemplate: '<button class="mombobutton">↓</button>',
             itemTemplate: '<a class="item">{item}</a>',
             menuTemplate: '<div class="mombomenu">{menu}</div>',
-            render: render
+            render: function(tmpl, value, token) {
+                return tmpl.replace('{'+token+'}', value);
+            }
         },
         cssClasses: {
             matchingClass: 'match',
             selectedClass: 'selected'
+        },
+        flags: {
+            customItems:true,
+            saveCustomItems:true,
+            hideUnmatchedItems:true
         }
     };
     // Collection method.
