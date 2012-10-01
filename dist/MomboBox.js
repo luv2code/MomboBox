@@ -1,10 +1,6 @@
-/*
- * MomboBox
- * https://github.com/luv2code/MomboBox
- *
- * Copyright (c) 2012 Matthew Taylor
- * Licensed under the MIT license.
- */
+/*! User Modifiable Combobox - v0.1.0 - 2012-10-01
+* https://github.com/luv2code/MomboBox
+* Copyright (c) 2012 Matthew Taylor; Licensed MIT, GPL */
 
 (function($) {
     var defaults = {
