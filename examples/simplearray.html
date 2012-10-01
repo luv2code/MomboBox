@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href="mombobox.css" rel="stylesheet" />
+        <script src="../libs/jquery/jquery.js"></script>
+        <script src="../src/combobox.js"></script>
+        <script src="../src/MomboBox.js"></script>
+        <script>
+            $(function () {
+                $('#cbColor').momboBox({
+                    data:[
+                        'Blue',
+                        'Orange',
+                        'Green',
+                        'Black',
+                        'Brown',
+                        'Grey'
+                    ]
+                })
+            });
+        </script>
+        <style type="text/css" media="screen">
+        </style>
+    </head>
+    <body>
+        <label for="cbColor">Choose a color:</label>
+        <input id="cbColor" />
+    </body>
+</html>
