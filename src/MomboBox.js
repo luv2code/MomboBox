@@ -20,7 +20,8 @@
         cssClasses: {
             matchingItem: 'match',
             selectedItem: 'selected',
-            item: 'item'
+            item: 'item',
+            menu: 'mombomenu'
         },
         flags: {
             customItems:true,
@@ -38,6 +39,8 @@
                 menuContent = '',
                 $items,
                 $input = $(this),
+                origValue = $input.val(),
+                origValGet = $input.val,
                 $button = $(momboBox.templates.buttonTemplate).insertAfter($input),
                 $menu,
                 offset = $input.offset(),
@@ -50,7 +53,14 @@
                     $menu.empty();
                     $items = $(menuContent).appendTo($menu);
                 };
-
+            $input.val = function (value, soft) {
+                if(typeof value === 'string') {
+                    origValue = !soft ? value : origValue;
+                    return origValGet.call($input, value);
+                } else {
+                    return origValGet.call($input);
+                }
+            };
             //set up the elements
             $menu = $(momboBox.templates.menuTemplate)
                 .insertAfter($button)
@@ -69,6 +79,14 @@
             renderMenu();
 
             //event bindings
+            $(document).on('click',function () {
+                if(!(
+                    $input.is(':momboFocus') ||
+                    $button.is(':momboFocus')
+                )) {
+                    $menu.fadeOut('fast');
+                }
+            });
             $button.on('click', function () {
                 $input.focus();
             });
@@ -78,15 +96,13 @@
                     $input.select();
                     $menu.show();
                 })
-                .on('blur', function () {
-                    $menu.fadeOut('fast');//need time to register click events
-                })
                 .on('keydown', function (ev) {
                     var $selected = $items.siblings('.' + momboBox.cssClasses.selectedItem),
                         index = 0,
                         last = $items.length - 1,
                         value,
                         top;
+                    $menu.show();
                     $selected.toggleClass(momboBox.cssClasses.selectedItem);
                     switch(ev.which) {
                         case 38 : //up arrow key
@@ -103,7 +119,7 @@
                                 value = $items.last().addClass(momboBox.cssClasses.selectedItem).text();
                                 top = $items.last().position().top;
                             }
-                            $input.val(value);
+                            $input.val(value, true);
                             $menu.scrollTop(top);
                             break;
                         case 40 : //down arrow key
@@ -120,9 +136,17 @@
                                 value = $items.first().addClass(momboBox.cssClasses.selectedItem).text();
                                 top = $items.first().position().top;
                             }
-                            $input.val(value);
+                            $input.val(value, true);
                             $menu.scrollTop(top);
                             break;
+                        case 27 : //escape
+                            $menu.fadeOut('fast');
+                            $input.val(origValue);
+                            break;
+                        case 9 : //tab
+                            $menu.fadeOut('fast');
+                            break;
+
                     }
                 })
                 .on('keyup', function (ev) {
@@ -148,11 +172,17 @@
                                         $item.removeClass(momboBox.cssClasses.matchingItem);
                                     }
                                 });
+                                $match = $items.siblings('.' + momboBox.cssClasses.matchingItem).first();
+                                if($match.length > 0) {
+                                    $menu.scrollTop($match.position().top);
+                                }
                             }
                             break;
                     }
                 });
         });
     };
-
+    $.expr[':'].momboFocus = function(elem) {
+        return elem === document.activeElement && (elem.type || elem.href);
+    };
 }(jQuery));
