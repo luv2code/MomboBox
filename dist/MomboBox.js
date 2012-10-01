@@ -41,9 +41,6 @@
                 origValGet = $input.val,
                 $button = $(momboBox.templates.buttonTemplate).insertAfter($input),
                 $menu,
-                offset = $input.offset(),
-                top = offset.top + $input.outerHeight(),
-                left = offset.left,
                 renderMenu = function () {
                     menuContent = '';
                     $.each(momboBox.data, function (index, item) {
@@ -54,17 +51,21 @@
                 },
                 setMatching = function () {
                     var $match, rgx = new RegExp('('+$input.val()+')', 'i');
-                    $items.each(function (i, item) {
-                        var $item = $(item), text = $item.text();
-                        if(rgx.test(text)) {
-                            $item.addClass(momboBox.cssClasses.matchingItem);
-                        } else {
-                            $item.removeClass(momboBox.cssClasses.matchingItem);
+                    if(!!$input.val()) {
+                        $items.each(function (i, item) {
+                            var $item = $(item), text = $item.text();
+                            if(rgx.test(text)) {
+                                $item.addClass(momboBox.cssClasses.matchingItem);
+                            } else {
+                                $item.removeClass(momboBox.cssClasses.matchingItem);
+                            }
+                        });
+                        $match = $items.siblings('.' + momboBox.cssClasses.matchingItem).first();
+                        if($match.length > 0) {
+                            $menu.scrollTop($match.position().top);
                         }
-                    });
-                    $match = $items.siblings('.' + momboBox.cssClasses.matchingItem).first();
-                    if($match.length > 0) {
-                        $menu.scrollTop($match.position().top);
+                    } else {
+                        $items.removeClass(momboBox.cssClasses.matchingItem);
                     }
                 },
                 addCustomItem = function (text) {
@@ -76,6 +77,13 @@
             momboBox.update = function () {
                 renderMenu();
                 setMatching();
+            };
+
+            momboBox.getPosition = function () {
+                var offset = $input.offset(),
+                    top = $input.outerHeight() + offset.top,
+                    left = offset.left;
+                return { top: top, left: left };
             };
 
             $input.val = function (value, soft) {
@@ -94,7 +102,7 @@
             //set up the elements
             $menu = $(momboBox.templates.menuTemplate)
                 .insertAfter($button)
-                .offset({top:top, left:left})
+                .offset(momboBox.getPosition())
                 .on('click', '.' + momboBox.cssClasses.item, function (ev) {
                     $input.val($(ev.target).text());
                     $menu.fadeOut('fast');
@@ -131,6 +139,7 @@
                 .on('focus', function () {
                     $input.select();
                     $menu.show();
+                    $menu.offset(momboBox.getPosition());
                 })
                 .on('keydown', function (ev) {
                     var $selected = $items.siblings('.' + momboBox.cssClasses.selectedItem),
