@@ -29,7 +29,8 @@
             hideUnmatchedItems:true,
             prependCustom:true
         }
-    };
+    },
+        define = window.define;
     // Collection method.
     $.fn.momboBox = function(options) {
         return this.each(function() {
@@ -236,4 +237,8 @@
     $.expr[':'].momboFocus = function(elem) {
         return elem === document.activeElement && (elem.type || elem.href);
     };
+
+    if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
+        define(function () { } ); //just signal that we're loaded.
+    }
 }(jQuery));
