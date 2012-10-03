@@ -1,8 +1,8 @@
-/*! User Modifiable Combobox - v0.1.0 - 2012-10-01
+/*! User Modifiable Combobox - v0.1.0 - 2012-10-03
 * https://github.com/luv2code/MomboBox
 * Copyright (c) 2012 Matthew Taylor; Licensed MIT, GPL */
 
-(function($) {
+(function($, window) {
     var defaults = {
         data: [],
         templates: {
@@ -142,10 +142,15 @@
                         addCustomItem(item);
                     }
                 })
+                .on('click', function (){
+                    $input.focus();
+                })
                 .on('focus', function () {
-                    $input.select();
                     $menu.show();
                     $menu.offset(momboBox.getPosition());
+                    window.setTimeout(function () {
+                        $input.select();
+                    }, 0);
                 })
                 .on('keydown', function (ev) {
                     var $selected = $items.siblings('.' + momboBox.cssClasses.selectedItem),
@@ -230,7 +235,7 @@
                 .on('keyup', function (ev) {
                     var $matching;
                     setMatching();
-                    //TODO: fix this
+                    //TODO: fix this code for hiding missing umatched values
 //                    if(momboBox.flags.hideUnmatchedItems) {
 //                        $matching = $items.siblings('.' + momboBox.cssClasses.matchingItem);
 //                        if($matching.length > 0) {
@@ -250,4 +255,4 @@
     if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
         define(function () { } ); //just signal that we're loaded.
     }
-}(jQuery));
+}(jQuery, window));
