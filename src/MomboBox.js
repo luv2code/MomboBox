@@ -37,7 +37,7 @@
             if(this.nodeName !== 'INPUT') {
                 throw new Error("the momboBox plugin only works on input elements");
             }
-            var momboBox = this.momboBox = $.extend({}, defaults, options),
+            var momboBox = this.momboBox = $.extend(true, {}, defaults, options),
                 menuContent = '',
                 $items,
                 $input = $(this),
