@@ -59,4 +59,11 @@
         ok($('div.mombomenu').is(':visible'));
     });
 
+    asyncTest('show the menu when the input box receivs a click', function (done) {
+        this.$elem.click();
+        setTimeout(function () {
+            ok($('div.mombomenu').is(':visible'));
+            start();
+        }, 1);
+    });
 }(jQuery));
