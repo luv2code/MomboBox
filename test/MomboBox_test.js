@@ -22,6 +22,7 @@
        raises(block, [expected], [message])
        */
 
+
     module('jQuery#momboBox', {
         setup: function() {
                    this.elems = $('#qunit-fixture').children();
@@ -41,6 +42,8 @@
             $('*').momboBox();
         }, 'the momboBox plugin only works on input elements');
     });
+
+
     module('with a simple array it', {
         setup: function () {
             this.$elem = $('#qunit-fixture input').momboBox({ 
@@ -52,7 +55,6 @@
     test('populates data from constructor', 1, function () {
         equal(this.$elem.get(0).momboBox.data.length, 4);
     });
-
 
     test('show the menu when the input box receivs focus', function () {
         this.$elem.focus();
