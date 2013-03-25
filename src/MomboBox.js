@@ -156,6 +156,9 @@
                         $input.select();
                     }, 0);
                 })
+                .on('blur', function () {
+                    $menu.fadeOut('fast');
+                })
                 .on('keydown', function (ev) {
                     var $selected = $items.siblings('.' + momboBox.cssClasses.selectedItem),
                         index = 0,
