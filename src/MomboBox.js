@@ -81,6 +81,43 @@
                     var insertMethod = momboBox.flags.prependCustom ? 'unshift' : 'push';
                     momboBox.data[insertMethod](text);
                     momboBox.update();
+                },
+                setMenuSize = function(){
+                    
+                    $menu.height('auto');
+                    $menu.css('overflowY', 'visible');
+                    
+                    var
+                        bottomMargin = 40, // this is the app footer. Not sure how to make this more generic
+                        offset = momboBox.getPosition(),
+                        winBox = {
+                            w: $(window).width(),
+                            h: $(window).height()
+                        },
+                        menuHeight = $menu.height(),
+                        maxheight = winBox.h - bottomMargin - offset.top;
+
+                    if(menuHeight > maxheight){
+                        $menu.height( maxheight );
+                        $menu.css('overflowY', 'auto');
+                    }
+                    
+                    $menu.offset(offset);
+                },
+                isOpen = false,
+                open = function(){
+                    if(isOpen){ return; }
+                    isOpen = true;
+                    $menu.show();
+                    setMenuSize();
+                    window.setTimeout(function () {
+                        $input.select();
+                    }, 0);
+                },
+                close = function(){
+                    if(!isOpen){ return; }
+                    isOpen = false;
+                    $menu.fadeOut('fast');    
                 };
 
             momboBox.update = function () {
@@ -99,9 +136,8 @@
                 if(typeof value === 'string') {
                     origValue = !soft ? value : origValue;
                     return origValGet.call($input, value);
-                } else {
-                    return origValGet.call($input);
                 }
+                return origValGet.call($input);
             };
 
             if(!momboBox.flags.customItems && !!momboBox.data && momboBox.data.length > 0) {
@@ -114,7 +150,7 @@
                 .offset(momboBox.getPosition())
                 .on('click', '.' + momboBox.cssClasses.item, function (ev) {
                     $input.val($(ev.target).text());
-                    $menu.fadeOut('fast');
+                    close();
                     $items.removeClass(momboBox.cssClasses.matchingItem);
                     $input.trigger('changed', $input.val());
                 })
@@ -132,7 +168,7 @@
                     $input.is(':momboFocus') ||
                     $button.is(':momboFocus')
                 )) {
-                    $menu.fadeOut('fast');
+                    close();
                 }
             });
             $button.on('click', function () {
@@ -150,14 +186,7 @@
                     $input.focus();
                 })
                 .on('focus', function () {
-                    $menu.show();
-                    $menu.offset(momboBox.getPosition());
-                    window.setTimeout(function () {
-                        $input.select();
-                    }, 0);
-                })
-                .on('blur', function () {
-                    $menu.fadeOut('fast');
+                    open();
                 })
                 .on('keydown', function (ev) {
                     var $selected = $items.siblings('.' + momboBox.cssClasses.selectedItem),
@@ -167,7 +196,7 @@
                         top,
                         $match;
                     if(ev.which !== 27) {
-                        $menu.show();
+                        open();
                     }
                     $selected.toggleClass(momboBox.cssClasses.selectedItem + ' ' + momboBox.cssClasses.matchingItem);
                     switch(ev.which) {
@@ -216,11 +245,11 @@
                             $input.val(value, true);
                             break;
                         case 27 : //escape
-                            $menu.fadeOut('fast');
+                            close();
                             $input.val(origValue);
                             break;
                         case 9 : //tab
-                            $menu.fadeOut('fast');
+                            close();
                             break;
                         case 13 :
                             $match = setMatching();
@@ -234,10 +263,13 @@
                                 }
                             }
                             $input.trigger('changed', $input.val());
-                            $menu.fadeOut('fast');
+                            close();
                             break;
 
                     }
+                })
+                .on('blur', function () {
+                    close();
                 })
                 .on('keyup', function (ev) {
                     var $matching;
@@ -260,6 +292,6 @@
     };
 
     if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
-        define(function () { } ); //just signal that we're loaded.
+        define(function () { return $; } ); //just signal that we're loaded.
     }
 }(jQuery, window));
